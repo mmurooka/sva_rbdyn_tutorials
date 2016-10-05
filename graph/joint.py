@@ -1,7 +1,7 @@
 from tvtk.api import tvtk
 
-import eigen3 as e
-import spacevecalg as sva
+import eigen as e
+import sva
 
 
 def makeActor(source, color):
@@ -19,7 +19,7 @@ def revoluteJoint(joint):
   """
   Return a cylinder and the appropriate static transform.
   """
-  axis = e.toEigen(e.toNumpy(joint.motionSubspace())[:3])
+  axis = e.Vector3d(joint.motionSubspace()[:3])
   s = tvtk.CylinderSource(height=0.1, radius=0.02)
   quat = e.Quaterniond()
   # Cylinder is around the Y axis
@@ -31,7 +31,7 @@ def prismaticJoint(joint):
   """
   Return a prism and the appropriate static transform.
   """
-  axis = e.toEigen(e.toNumpy(joint.motionSubspace())[3:])
+  axis = e.Vector3d(joint.motionSubspace()[3:])
   s = tvtk.CubeSource(x_length=0.02, y_length=0.1, z_length=0.02)
   quat = e.Quaterniond()
   quat.setFromTwoVectors(axis, e.Vector3d.UnitY())

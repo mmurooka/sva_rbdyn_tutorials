@@ -1,7 +1,7 @@
 from tvtk.api import tvtk
 
-import eigen3 as e
-import spacevecalg as sva
+import eigen as e
+import sva
 
 from transform import setActorTransform
 

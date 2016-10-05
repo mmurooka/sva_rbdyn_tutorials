@@ -4,8 +4,6 @@ from body import linesBody, meshBody, endEffectorBody
 from joint import revoluteJoint, prismaticJoint, sphericalJoint
 from transform import setActorTransform
 
-
-
 JOINT_FROM_TYPE = {
   rbd.Joint.Rev: revoluteJoint,
   rbd.Joint.Prism: prismaticJoint,
@@ -24,16 +22,15 @@ class MultiBodyViz(object):
     self.aBodies = [] # (body index, actor, X_s)
     self.aJoints = [] # (joint index, actor, X_s)
 
-    successorJointsId = dict(mbg.successorJoints(mb.body(0).id()))
+    successorJointsName = dict(mbg.successorJoints(mb.body(0).name()))
 
     # body displayed by a line
     lineBodiesByIndex = {bi:b for bi, b in enumerate(mb.bodies()) if
-                         len(list(successorJointsId[b.id()])) > 0}
+                         len(list(successorJointsName[b.name()])) > 0}
 
     # create actor from mesh
     for bodyName, (fileName, X_sm, scale) in meshDict.items():
-      bodyId = mbg.bodyIdByName(bodyName)
-      bi = mb.bodyIndexById(bodyId)
+      bi = mb.bodyIndexByName(bodyName)
       try:
         del lineBodiesByIndex[bi] # don't create a line body if a mesh is set
       except KeyError:
@@ -43,13 +40,12 @@ class MultiBodyViz(object):
 
     # create actor from end effector
     for bodyName, (X_see, size, color) in endEffectorDict.items():
-      bodyId = mbg.bodyIdByName(bodyName)
-      bi = mb.bodyIndexById(bodyId)
+      bi = mb.bodyIndexByName(bodyName)
       a, X_s = endEffectorBody(X_see, size, color)
       self.aBodies.append((bi, a, X_s))
 
     for bi, b in lineBodiesByIndex.items():
-      a, X_s = linesBody(mb, b.id(), successorJointsId)
+      a, X_s = linesBody(mb, b.name(), successorJointsName)
       self.aBodies.append((bi, a, X_s))
 
     for ji, j in enumerate(mb.joints()):
@@ -92,8 +88,8 @@ if __name__ == '__main__':
   sys.path += [".."]
 
   import numpy as np
-  import eigen3 as e
-  import spacevecalg as sva
+  import eigen as e
+  import sva
 
   from robots import TutorialTree
 
@@ -113,6 +109,7 @@ if __name__ == '__main__':
   # test MultiBodyViz
   from tvtk.tools import ivtk
   viewer = ivtk.viewer()
+  viewer.size = (640, 480)
   mbv.addActors(viewer.scene)
   mbv.display(mb, mbc)
 

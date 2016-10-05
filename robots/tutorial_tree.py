@@ -1,5 +1,5 @@
-import eigen3 as e
-import spacevecalg as sva
+import eigen as e
+import sva
 import rbdyn as rbd
 
 
@@ -21,14 +21,14 @@ def TutorialTree():
   I = e.Matrix3d.Identity()
   h = e.Vector3d.Zero()
 
-  rbi = sva.RBInertia(mass, h, I)
+  rbi = sva.RBInertiad(mass, h, I)
 
-  b0 = rbd.Body(rbi, 0, "b0")
-  b1 = rbd.Body(rbi, 1, "b1")
-  b2 = rbd.Body(rbi, 2, "b2")
-  b3 = rbd.Body(rbi, 3, "b3")
-  b4 = rbd.Body(rbi, 4, "b4")
-  b5 = rbd.Body(rbi, 5, "b5")
+  b0 = rbd.Body(rbi, "b0")
+  b1 = rbd.Body(rbi, "b1")
+  b2 = rbd.Body(rbi, "b2")
+  b3 = rbd.Body(rbi, "b3")
+  b4 = rbd.Body(rbi, "b4")
+  b5 = rbd.Body(rbi, "b5")
 
   mbg.addBody(b0)
   mbg.addBody(b1)
@@ -37,11 +37,11 @@ def TutorialTree():
   mbg.addBody(b4)
   mbg.addBody(b5)
 
-  j0 = rbd.Joint(rbd.Joint.Rev, e.Vector3d.UnitX(), True, 0, "j0")
-  j1 = rbd.Joint(rbd.Joint.Rev, e.Vector3d.UnitY(), True, 1, "j1")
-  j2 = rbd.Joint(rbd.Joint.Rev, e.Vector3d.UnitZ(), True, 2, "j2")
-  j3 = rbd.Joint(rbd.Joint.Spherical, True, 3, "j3")
-  j4 = rbd.Joint(rbd.Joint.Prism, e.Vector3d.UnitY(), True, 4, "j4")
+  j0 = rbd.Joint(rbd.Joint.Rev, e.Vector3d.UnitX(), True, "j0")
+  j1 = rbd.Joint(rbd.Joint.Rev, e.Vector3d.UnitY(), True, "j1")
+  j2 = rbd.Joint(rbd.Joint.Rev, e.Vector3d.UnitZ(), True, "j2")
+  j3 = rbd.Joint(rbd.Joint.Spherical, True, "j3")
+  j4 = rbd.Joint(rbd.Joint.Prism, e.Vector3d.UnitY(), True, "j4")
 
   mbg.addJoint(j0)
   mbg.addJoint(j1)
@@ -52,14 +52,14 @@ def TutorialTree():
   to = sva.PTransformd(e.Vector3d(0., 0.5, 0.))
   fro = sva.PTransformd.Identity()
 
-  mbg.linkBodies(0, to, 1, fro, 0)
-  mbg.linkBodies(1, to, 2, fro, 1)
-  mbg.linkBodies(2, to, 3, fro, 2)
-  mbg.linkBodies(1, sva.PTransformd(e.Vector3d(0.5, 0., 0.)),
-                 4, fro, 3)
-  mbg.linkBodies(3, to, 5, fro, 4)
+  mbg.linkBodies("b0", to, "b1", fro, "j0")
+  mbg.linkBodies("b1", to, "b2", fro, "j1")
+  mbg.linkBodies("b2", to, "b3", fro, "j2")
+  mbg.linkBodies("b1", sva.PTransformd(e.Vector3d(0.5, 0., 0.)),
+                 "b4", fro, "j3")
+  mbg.linkBodies("b3", to, "b5", fro, "j4")
 
-  mb = mbg.makeMultiBody(0, True)
+  mb = mbg.makeMultiBody("b0", True)
   mbc = rbd.MultiBodyConfig(mb)
   mbc.zero(mb)
 

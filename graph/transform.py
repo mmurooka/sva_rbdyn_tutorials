@@ -4,9 +4,9 @@ def vtkTransform(X):
   """
   R = X.rotation()
   T = X.translation()
-  return (R[0], R[1], R[2], T[0],
-          R[3], R[4], R[5], T[1],
-          R[6], R[7], R[8], T[2],
+  return (R[0, 0], R[1, 0], R[2, 0], T[0],
+          R[0, 1], R[1, 1], R[2, 1], T[1],
+          R[0, 2], R[1, 2], R[2, 2], T[2],
           0.,   0.,   0.,   1.)
 
 

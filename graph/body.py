@@ -2,8 +2,8 @@ from os.path import splitext
 
 from tvtk.api import tvtk
 
-import eigen3 as e
-import spacevecalg as sva
+import eigen as e
+import sva
 
 
 
@@ -13,7 +13,7 @@ FILE_READER = {
 }
 
 
-def linesBody(mb, bodyId, successorJointsId):
+def linesBody(mb, bodyName, successorJointsName):
   """
   Return a mesh represented by lines and the appropriate static transform.
   """
@@ -21,7 +21,7 @@ def linesBody(mb, bodyId, successorJointsId):
   sources = []
 
   # create a line from the body base to the next joint
-  for s in map(mb.jointIndexById, successorJointsId[bodyId]):
+  for s in map(mb.jointIndexByName, successorJointsName[bodyName]):
     X_s = mb.transform(s)
     sources.append(tvtk.LineSource(point1=(0., 0., 0.),
                                    point2=tuple(X_s.translation())))
